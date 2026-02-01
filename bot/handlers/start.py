@@ -197,6 +197,15 @@ async def get_instruction(callback: CallbackQuery):
         reply_markup=reg_inline_keyboard
     )
 
+@router.message()
+async def debug_media(message: Message):
+    if message.video:
+        print("VIDEO FILE_ID:", message.video.file_id)
+    elif message.document:
+        print("DOCUMENT FILE_ID:", message.document.file_id)
+    else:
+        print("MESSAGE:", message.model_dump())
+
 
 # --- Регистрация пользователя через кнопку ---
 
@@ -233,7 +242,7 @@ async def registered(callback: CallbackQuery):
 
 @router.message()
 async def process_user_message(message: Message):
-    if message.text.startswith("/"):
+    if message.text and message.text.startswith("/"):
         print(f"❓ Ненадіслана команда: {message.text}")
         await message.answer("❗ Невідома команда.")
         return
