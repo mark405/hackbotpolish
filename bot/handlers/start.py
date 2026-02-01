@@ -200,11 +200,12 @@ async def get_instruction(callback: CallbackQuery):
 @router.message()
 async def debug_media(message: Message):
     if message.video:
-        print("VIDEO FILE_ID:", message.video.file_id)
+        logging.info(f"VIDEO FILE_ID: {message.video.file_id}")
     elif message.document:
-        print("DOCUMENT FILE_ID:", message.document.file_id)
+        logging.info(f"DOCUMENT FILE_ID: {message.document.file_id}")
     else:
-        print("MESSAGE:", message.model_dump())
+        logging.info(f"MESSAGE: {message.model_dump()}")
+
 
 
 # --- Регистрация пользователя через кнопку ---
