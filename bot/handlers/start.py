@@ -226,7 +226,7 @@ async def send_registration_link(callback: CallbackQuery):
             invite = invite_result.scalar_one_or_none()
             if invite:
                 referral_link = invite.casino_link
-
+        print(f"Посилання для реєстрації: {referral_link}")
         await callback.message.answer(f"Ось посилання для реєстрації: {referral_link}")
 
 
