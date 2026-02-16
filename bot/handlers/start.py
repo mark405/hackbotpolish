@@ -1,14 +1,14 @@
 import asyncio
+import logging
 
 from aiogram import Bot, Router, F
-from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, WebAppInfo, FSInputFile
 from aiogram.filters import CommandStart
+from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, WebAppInfo
 from sqlalchemy.future import select
 
+from bot.config import WEBAPP_BASE_URL, REGISTRATION_URL
 from bot.database.db import SessionLocal
 from bot.database.models import User, Referral, ReferralInvite
-from bot.config import WEBAPP_BASE_URL, REGISTRATION_URL
-import logging
 
 router = Router()
 awaiting_ids = {}
@@ -17,13 +17,15 @@ awaiting_ids = {}
 
 how_it_works_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
-        [InlineKeyboardButton(text="🔥 Дізнатись, як це працює", callback_data="how_it_works")]
+        [InlineKeyboardButton(text="🔥 Дізнатись, як це працює", callback_data="how_it_works")],
+        [InlineKeyboardButton(text="🆘 Допомога", callback_data="help")]
     ]
 )
 
 instruction_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
-        [InlineKeyboardButton(text="🚀 Отримати доступ до інструкції", callback_data="get_instruction")]
+        [InlineKeyboardButton(text="🚀 Отримати доступ до інструкції", callback_data="get_instruction")],
+        [InlineKeyboardButton(text="🆘 Допомога", callback_data="help")]
     ]
 )
 
@@ -31,7 +33,8 @@ reg_inline_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text="🔗 ПОСИЛАННЯ ДЛЯ РЕЄСТРАЦІЇ", callback_data="reg_link")],
         [InlineKeyboardButton(text="✅ Я ЗАРЕЄСТРУВАВСЯ", callback_data="registered")],
-        [InlineKeyboardButton(text="⬅️ Назад", callback_data="back_to_start")]
+        [InlineKeyboardButton(text="⬅️ Назад", callback_data="back_to_start")],
+        [InlineKeyboardButton(text="🆘 Допомога", callback_data="help")]
     ]
 )
 
@@ -42,11 +45,14 @@ games_keyboard = InlineKeyboardMarkup(
             InlineKeyboardButton(text="⚽ GOAL ⚽", web_app=WebAppInfo(url=f"{WEBAPP_BASE_URL}/goalrush-ukr"))
         ],
         [
-            InlineKeyboardButton(text="✈️ AVIATRIX ✈️", web_app=WebAppInfo(url=f"{WEBAPP_BASE_URL}/aviatrixflymod-ukr")),
+            InlineKeyboardButton(text="✈️ AVIATRIX ✈️",
+                                 web_app=WebAppInfo(url=f"{WEBAPP_BASE_URL}/aviatrixflymod-ukr")),
             InlineKeyboardButton(text="🥅 PENALTY 🥅", web_app=WebAppInfo(url=f"{WEBAPP_BASE_URL}/penaltygame-ukr"))
         ],
+        [InlineKeyboardButton(text="🆘 Допомога", callback_data="help")]
     ]
 )
+
 
 # --- Сообщение старта ---
 
@@ -89,15 +95,15 @@ async def start_handler(message: Message):
     try:
         await message.answer(
             "👋 Вітаю!\n\n"
-        "Ти потрапив у бот, який використовують для отримання доходу на онлайн-іграх за допомогою автоматизованої аналітики.\n\n"
-        "Система створена так, щоб навіть новачок міг швидко розібратись і почати діяти без складнощів та досвіду.\n\n"
-        "💰 Користувачі, які чітко дотримуються інструкцій, заробляють 100–300$ вже з першого дня, працюючи з телефону та з дому.\n\n"
-        "❗️ Важливо:\n"
-        "❌ нічого зламувати не потрібно\n"
-        "❌ спеціальних знань не потрібно\n"
-        "❌ все вже налаштовано за тебе\n\n"
-        "Увесь процес розписаний покроково — 10–15 хвилин, і ти повністю розумієш, що робити далі.\n\n"
-        "👇 Тисни кнопку нижче:",
+            "Ти потрапив у бот, який використовують для отримання доходу на онлайн-іграх за допомогою автоматизованої аналітики.\n\n"
+            "Система створена так, щоб навіть новачок міг швидко розібратись і почати діяти без складнощів та досвіду.\n\n"
+            "💰 Користувачі, які чітко дотримуються інструкцій, заробляють 100–300$ вже з першого дня, працюючи з телефону та з дому.\n\n"
+            "❗️ Важливо:\n"
+            "❌ нічого зламувати не потрібно\n"
+            "❌ спеціальних знань не потрібно\n"
+            "❌ все вже налаштовано за тебе\n\n"
+            "Увесь процес розписаний покроково — 10–15 хвилин, і ти повністю розумієш, що робити далі.\n\n"
+            "👇 Тисни кнопку нижче:",
             reply_markup=how_it_works_keyboard
         )
 
@@ -140,7 +146,8 @@ async def start_handler(message: Message):
                     else:
                         logging.warning(f"⚠️ Invite найден, но Referral не найден")
                 else:
-                    logging.warning(f"⚠️ Пользователь {message.from_user.id} пришёл с несуществующим bot_tag: {bot_tag}")
+                    logging.warning(
+                        f"⚠️ Пользователь {message.from_user.id} пришёл с несуществующим bot_tag: {bot_tag}")
 
     except Exception as e:
         logging.error(f"❌ Ошибка в /start: {str(e)}")
@@ -196,6 +203,7 @@ async def get_instruction(callback: CallbackQuery):
         reply_markup=reg_inline_keyboard
     )
 
+
 # @router.message()
 # async def debug_media(message: Message):
 #     if message.video:
@@ -228,6 +236,11 @@ async def send_registration_link(callback: CallbackQuery):
                 referral_link = invite.casino_link
         logging.info(f"Generated registration link for user {callback.from_user.id}: {referral_link}")
         await callback.message.answer(f"Ось посилання для реєстрації: {referral_link}")
+
+@router.callback_query(F.data == "help")
+async def help_callback(callback: CallbackQuery):
+    await callback.answer()
+    await callback.message.answer("Напишіть підтримці:\n@support_username")
 
 
 @router.callback_query(F.data == "registered")
@@ -263,7 +276,7 @@ async def process_user_message(message: Message):
 @router.callback_query()
 async def catch_unhandled_callbacks(callback: CallbackQuery):
     known_callbacks = [
-        "how_it_works", "get_instruction",
+        "help", "how_it_works", "get_instruction",
         "registered", "reg_link",
         "admin_stats", "admin_add", "admin_remove", "user_list",
         "admin_list", "add_ref_link", "remove_ref_link", "referral_stats"
@@ -277,3 +290,4 @@ async def catch_unhandled_callbacks(callback: CallbackQuery):
 
         text = "Ви натиснули невідому кнопку!"
         await callback.message.answer(text)
+
