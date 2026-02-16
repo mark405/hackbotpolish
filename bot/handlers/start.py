@@ -283,12 +283,12 @@ async def process_user_message(message: Message):
         await message.answer("❌ Введи тільки цифри.")
         return
 
+    async with SessionLocal() as session:
+        await save_step(session, message.from_user.id, "entered_id")
+
     await message.answer("🔍 Перевіряю ID у базі...")
     await send_access_granted_message(message.bot, message, "uk")
     awaiting_ids.pop(message.from_user.id, None)
-
-    async with SessionLocal() as session:
-        await save_step(session, message.from_user.id, "entered_id")
 
 # --- Неизвестные колбэки ---
 
