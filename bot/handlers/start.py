@@ -76,7 +76,7 @@ async def send_start_text(bot: Bot, target, is_edit: bool = False):
     username = target.from_user.username or f"user_{target.from_user.id}"
 
     async with SessionLocal() as session:
-        await save_step(session, target.from_user.id, "start", username)
+        await save_step(target.from_user.id, "start", username)
 
 
 async def send_access_granted_message(bot: Bot, message: Message, user_lang: str):
@@ -93,7 +93,7 @@ async def send_access_granted_message(bot: Bot, message: Message, user_lang: str
     username = message.from_user.username or f"user_{message.from_user.id}"
 
     async with SessionLocal() as session:
-        await save_step(session, message.from_user.id, "access_granted", username=username)
+        await save_step(message.from_user.id, "access_granted", username=username)
 
 
 # --- Obsługa /start ---
@@ -160,7 +160,7 @@ async def start_handler(message: Message):
         username = message.from_user.username or f"user_{message.from_user.id}"
 
         async with SessionLocal() as session:
-            await save_step(session, message.from_user.id, "start", username)
+            await save_step(message.from_user.id, "start", username)
 
     except Exception as e:
         logging.error(f"❌ Błąd w /start: {str(e)}")
@@ -193,7 +193,7 @@ async def how_it_works(callback: CallbackQuery):
     username = callback.message.from_user.username or f"user_{callback.message.from_user.id}"
 
     async with SessionLocal() as session:
-        await save_step(session, callback.from_user.id, "how_it_works", username)
+        await save_step(callback.from_user.id, "how_it_works", username)
 
 
 @router.callback_query(F.data == "get_instruction")
@@ -222,7 +222,7 @@ async def get_instruction(callback: CallbackQuery):
     username = callback.message.from_user.username or f"user_{callback.message.from_user.id}"
 
     async with SessionLocal() as session:
-        await save_step(session, callback.from_user.id, "instruction", username)
+        await save_step(callback.from_user.id, "instruction", username)
 
 
 # --- Rejestracja użytkownika przez przycisk ---
@@ -250,7 +250,7 @@ async def send_registration_link(callback: CallbackQuery):
     username = callback.message.from_user.username or f"user_{callback.from_user.id}"
 
     async with SessionLocal() as session:
-        await save_step(session, callback.from_user.id, "reg_link", username)
+        await save_step(callback.from_user.id, "reg_link", username)
 
 
 @router.callback_query(F.data == "help")
@@ -287,7 +287,7 @@ async def process_user_message(message: Message):
     username = message.from_user.username or f"user_{message.from_user.id}"
 
     async with SessionLocal() as session:
-        await save_step(session, message.from_user.id, "entered_id", username)
+        await save_step(message.from_user.id, "entered_id", username)
 
     await message.answer("🔍 Sprawdzam ID w bazie...")
     await send_access_granted_message(message.bot, message, "pl")
