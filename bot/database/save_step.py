@@ -4,6 +4,7 @@ from bot.database.models import UserProgress
 
 
 async def save_step(session, telegram_id: int, step: str, username: str):
+    print()
     # result = await session.execute(
     #     select(UserProgress).filter_by(telegram_id=telegram_id)
     # )
