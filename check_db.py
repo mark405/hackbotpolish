@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 # Проверка подключения к базе данных
 def test_db_connection():
     try:
-        engine = create_engine("postgresql://casino_hack_user:your_password@localhost/casino_hack_db")
+        engine = create_engine("postgresql://casino_hack_user:your_password@localhost/casino_hack_polish_db")
         Session = sessionmaker(bind=engine)
         session = Session()
         # Используем text() для явного объявления SQL-запроса
