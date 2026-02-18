@@ -209,10 +209,10 @@ async def get_instruction(callback: CallbackQuery):
         "🎥 Poniżej znajduje się krótka instrukcja wideo."
     )
 
-    # video_file_id = "BAACAgIAAxkBAAP-aYyjHmJ-SnA7LwJqXIg_DPWxYWcAAtaUAAK4F2FIJBwFkbz1ATo6BA"
-    # await callback.message.answer_video(video=video_file_id)
-    #
-    # await asyncio.sleep(15)
+    video_file_id = "BAACAgIAAxkBAAMVaZX6tZ3_e5g-iSmhhsUhl05WybAAApeaAAKeeLFIUMyais-EHvg6BA"
+    await callback.message.answer_video(video=video_file_id)
+
+    await asyncio.sleep(15)
 
     await callback.message.answer(
         "💸 Twój pierwszy zysk jest już blisko! Jeden krok dzieli Cię od startu. "
