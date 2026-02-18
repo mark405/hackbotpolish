@@ -271,7 +271,8 @@ async def registered(callback: CallbackQuery):
 @router.message()
 async def process_user_message(message: Message):
     if message.video:
-        print(message.video.file_id)
+        logging.info(f"Received video from user {message.from_user.id}: {message.video.file_id}")
+        return
     if message.text.startswith("/"):
         print(f"❓ Niezrozumiana komenda: {message.text}")
         await message.answer("❗ Nieznana komenda.")
