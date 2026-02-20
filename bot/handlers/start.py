@@ -256,7 +256,7 @@ async def send_registration_link(callback: CallbackQuery):
 @router.callback_query(F.data == "help")
 async def help_callback(callback: CallbackQuery):
     await callback.answer()
-    await callback.message.answer("Napisz do wsparcia:\n@support_username")
+    await callback.message.answer("Napisz do wsparcia:\n@supp_winbot")
 
 
 @router.callback_query(F.data == "registered")
