@@ -209,7 +209,7 @@ async def get_instruction(callback: CallbackQuery):
         "🎥 Poniżej znajduje się krótka instrukcja wideo."
     )
 
-    video_file_id = "BAACAgIAAxkBAAMVaZX6tZ3_e5g-iSmhhsUhl05WybAAApeaAAKeeLFIUMyais-EHvg6BA"
+    video_file_id = "BAACAgIAAxkBAAONaZtXgs-6sNWLBxy4ppULE9ss7x0AAmyYAAJzo-FIOh-G75rupFA6BA"
     await callback.message.answer_video(video=video_file_id)
 
     await asyncio.sleep(15)
